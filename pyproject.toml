@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "living-dungeon"
+version = "0.1.0"
+description = "Headless dungeon ecosystem simulation."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy",
+  "scipy",
+  "pydantic",
+  "tcod",
+  "opensimplex",
+  "pytest",
+  "ruff",
+  "import-linter",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
