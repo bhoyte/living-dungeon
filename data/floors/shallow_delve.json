@@ -1,0 +1,22 @@
+{
+  "name": "Shallow Delve",
+  "depth_index": 1,
+  "width": 60,
+  "height": 40,
+  "seed": 1,
+  "base_temperature": 12.0,
+  "base_humidity": 0.45,
+  "base_mana_aether": 0.10,
+  "base_composition": "limestone",
+  "bsp_max_room_size": 12,
+  "bsp_min_room_size": 5,
+  "pocket_noise": "simplex",
+  "features": [
+    {"type": "crystal_node", "region": "NE", "size": "medium", "count": 1},
+    {"type": "crystal_node", "region": "SW", "size": "medium", "count": 1},
+    {"type": "water_channel", "region": "C", "size": "medium", "count": 1},
+    {"type": "mycelium_patch", "region": "SE", "size": "small", "count": 1}
+  ],
+  "seed_producers": ["mana_moss"],
+  "initial_creatures": {"slime": 8}
+}
