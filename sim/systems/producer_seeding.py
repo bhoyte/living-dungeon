@@ -8,7 +8,7 @@ from sim.world import World
 
 
 def seed_mana_moss(world: World, density: float = 0.15) -> int:
-    """Place mana moss on tiles where field conditions support it."""
+    """Place live mana moss organisms on suitable tiles."""
     f = world.field_map.fields
     tilemap = world.tilemap
     walls = tilemap.is_wall()

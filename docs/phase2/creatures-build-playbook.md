@@ -370,3 +370,35 @@ python -m app.headless --profile data/floors/shallow_delve.json --ticks 600 --se
 
 Use this baseline before every major phase-2 slice so regressions are obvious.
 
+---
+
+## 13) Phase-2 completion status (v1 closure)
+
+### Sprints 1–7 (done)
+
+| Sprint | Scope | Status |
+|--------|--------|--------|
+| 6.1 | Organism core + tick wiring | Done |
+| 6.2 | Fixed verbs/conditions + starter BT | Done |
+| 6.3 | Closed trophic loop (creature side) | Done |
+| 6.4 | Epigenome / adaptation markers | Done |
+| 6.5 | Population adaptation + cache (mocked gates) | Done |
+| 6.6 | Live LLM pick path (Ollama, validated, fallback) | Done |
+| 6.7 | Authored subtrees (§6.7 smoke + headless flags) | Done |
+
+Additional v1 closure in this pass:
+
+- `sim/reproduction.py` — deterministic asexual consumer reproduction (tick step 10)
+- `tests/test_population_loop.py`, `tests/test_metabolism_loop.py`
+- Headless `run_meta.json` adaptation/contract event summaries; optional `adaptation_events.jsonl`
+- `app/llm_soak.py` with optional `--gate` thresholds for live Ollama reliability tracking
+
+### Post-v1 (not blocking phase-2 v1)
+
+- ECS migration (systems-of-functions remains v1 architecture)
+- More species and behavior-tree variety beyond slime/scout/moss
+- Producer reproduction (mana_moss threshold + seed rule; ecosystem-v2 §14.3)
+- Mating / sexual reproduction and lineage UI
+- Advanced field chemistry and multi-floor persistence polish
+- DungeonMaster spell-intent boundary (post-v1; ecosystem-v2 §15)
+

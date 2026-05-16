@@ -65,6 +65,7 @@ def tick_record(
         "anomalies": anomaly_flags(fm),
         "producer_spawns": len(world.producer_spawns),
         "creature_spawns": len(world.creature_spawns),
+        "organism_count": len(world.organisms),
     }
 
 

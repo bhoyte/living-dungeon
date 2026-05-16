@@ -12,9 +12,9 @@ A **dungeon-first** simulation: the floor is treated as a living substrate—sta
 | [`data/floors/`](data/floors/) | Example floor profiles (JSON) consumed by generation. |
 | [`docs/`](docs/) | Canon, specs, phase-2 creatures spec, build playbooks, and research. |
 
-**Implemented today:** ecosystem pipeline from profile → generated `TileMap` → `FieldMap` (12 fields) → quiet reactions → tcod light + tremor → producer seeding from field masks → headless runs with telemetry → optional NPZ snapshots → checkpoint save/load → CI (ruff, pytest, import boundaries).
+**Implemented today:** ecosystem pipeline from profile → generated `TileMap` → `FieldMap` (12 fields) → quiet reactions → tcod light + tremor → producer seeding from field masks → headless runs with telemetry → optional NPZ snapshots → checkpoint save/load → **phase-2 creatures v1** (organisms, behavior trees, trophic loop, epigenome, adaptation cache, reproduction, live LLM pick + authored subtrees) → CI (ruff, pytest, import boundaries).
 
-**Deferred (phase 2):** mobile creatures, behavior trees, LLM adaptation—see [`docs/phase2/creatures-spec-v1.md`](docs/phase2/creatures-spec-v1.md) and the step-by-step [`docs/phase2/creatures-build-playbook.md`](docs/phase2/creatures-build-playbook.md).
+**Post-v1 (deferred):** ECS migration, additional species variety, advanced chemistry—see [`docs/phase2/creatures-spec-v1.md`](docs/phase2/creatures-spec-v1.md) and [`docs/phase2/creatures-build-playbook.md`](docs/phase2/creatures-build-playbook.md) §13.
 
 ## Documentation map
 
@@ -68,6 +68,39 @@ Activate the project virtual environment (for example `.venv-living-dungeon`), t
 python -m app.headless --profile data/floors/shallow_delve.json --ticks 600 --seed 42 --out runs/run-001
 ```
 
+**Live LLM smoke test** (stressed slimes, prints PASS/FAIL summary; optional `--out runs/llm-smoke`):
+
+```powershell
+python -m app.llm_smoke --ollama-model llama3.2 --out runs/llm-smoke
+```
+
+**Live authored subtree smoke (§6.7)** (Ollama authors + validates + auto-approves a new tree):
+
+```powershell
+python -m app.llm_authored_smoke --ollama-model llama3.2 --out runs/llm-authored-smoke
+```
+
+**Live LLM soak** (multi-seed reliability check across pick/authored modes):
+
+```powershell
+python -m app.llm_soak --mode both --seeds 101,102,103 --ollama-model llama3.2 --out runs/llm-soak
+```
+
+**Gated soak** (fail if pass rate or latency regresses; for nightly checks):
+
+```powershell
+python -m app.llm_soak --mode both --seeds 101,102,103 --gate --min-pass-rate 0.9 --max-mean-duration-sec 120 --max-duration-sec 180 --out runs/llm-soak
+```
+
+Optional CI: run the **LLM Soak (manual)** GitHub Actions workflow (`workflow_dispatch`) on a runner with Ollama available.
+
+**Live LLM headless run** (`--enable-llm` for slow-path adaptation; add `--llm-authored` for §6.7 subtree authoring; `--dump-adaptation-events` writes `adaptation_events.jsonl`; `run_meta.json` always includes event-count summaries):
+
+```powershell
+python -m app.headless --profile data/floors/shallow_delve.json --ticks 600 --seed 42 --out runs/run-llm --enable-llm --ollama-model llama3.2 --dump-adaptation-events
+python -m app.headless --profile data/floors/shallow_delve.json --ticks 600 --seed 42 --out runs/run-authored --enable-llm --llm-authored --ollama-model llama3.2 --dump-adaptation-events
+```
+
 **ASCII heatmap** from a saved snapshot (requires `--snapshot-npz` on the run above):
 
 ```powershell
@@ -92,6 +125,13 @@ python -m app.run_report --run-dir runs/run-001
 python -m ruff check .
 python -m pytest -q
 lint-imports
+```
+
+Optional live Ollama integration checks (skipped unless enabled):
+
+```powershell
+$env:OLLAMA_TEST=1; python -m pytest -q tests/test_ollama_integration.py
+$env:OLLAMA_AUTHORED_TEST=1; python -m pytest -q tests/test_ollama_authored_integration.py
 ```
 
 ## Other repo roots

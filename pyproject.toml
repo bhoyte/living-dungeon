@@ -12,6 +12,8 @@ dependencies = [
   "numpy",
   "scipy",
   "pydantic",
+  "httpx",
+  "py-trees",
   "tcod",
   "opensimplex",
   "pytest",
@@ -22,3 +24,6 @@ dependencies = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+markers = [
+  "integration: live external integration checks (opt-in)",
+]

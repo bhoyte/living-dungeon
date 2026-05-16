@@ -19,10 +19,22 @@ def load_telemetry(path: Path) -> list[dict]:
     return rows
 
 
+def _event_count_lines(meta: dict, key: str, heading: str) -> list[str]:
+    counts = meta.get(key) or {}
+    if not counts:
+        return []
+    lines = [heading]
+    for name in sorted(counts):
+        lines.append(f"- `{name}`: `{counts[name]}`")
+    lines.append("")
+    return lines
+
+
 def build_report(run_dir: Path) -> str:
     meta = load_json(run_dir / "run_meta.json")
     summary = load_json(run_dir / "field_summary.json")
     telemetry = load_telemetry(run_dir / "telemetry.jsonl")
+    adaptation_events_path = run_dir / "adaptation_events.jsonl"
 
     anomaly_ticks = [row["tick"] for row in telemetry if row.get("anomalies", {}).get("dirty")]
     last = telemetry[-1] if telemetry else {"fields": {}}
@@ -37,6 +49,19 @@ def build_report(run_dir: Path) -> str:
     lines.append(f"- Tick dt: `{meta.get('dt_per_tick')}`")
     lines.append(f"- Tilemap checksum: `{meta.get('tilemap_checksum_sha256')}`")
     lines.append("")
+
+    if meta.get("final_organism_count") is not None:
+        lines.append(f"- Final organisms: `{meta.get('final_organism_count')}`")
+    lines.append("")
+
+    lines.extend(_event_count_lines(meta, "adaptation_event_counts", "## Adaptation events (summary)"))
+    lines.extend(_event_count_lines(meta, "contract_event_counts", "## Contract events (summary)"))
+
+    if adaptation_events_path.is_file():
+        event_rows = load_telemetry(adaptation_events_path)
+        lines.append("## Adaptation events (jsonl)")
+        lines.append(f"- Rows in `adaptation_events.jsonl`: `{len(event_rows)}`")
+        lines.append("")
 
     lines.append("## Stability")
     lines.append(f"- Telemetry rows: `{len(telemetry)}`")

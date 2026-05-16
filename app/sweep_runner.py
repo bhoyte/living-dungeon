@@ -30,6 +30,11 @@ def run_sweep(profile: Path, seeds: list[int], ticks: list[int], out_root: Path,
                     out=str(run_dir),
                     dt=dt,
                     snapshot_npz=False,
+                    enable_llm=False,
+                    llm_authored=False,
+                    ollama_url="http://127.0.0.1:11434",
+                    ollama_model="llama3.2",
+                    dump_adaptation_events=False,
                 )
             )
 

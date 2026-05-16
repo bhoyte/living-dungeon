@@ -56,6 +56,11 @@ def test_run_headless_writes_artifacts(tmp_path: Path) -> None:
             out=str(out),
             dt=1.0,
             snapshot_npz=True,
+            enable_llm=False,
+            llm_authored=False,
+            ollama_url="http://127.0.0.1:11434",
+            ollama_model="llama3.2",
+            dump_adaptation_events=False,
         )
     )
 
@@ -73,6 +78,9 @@ def test_run_headless_writes_artifacts(tmp_path: Path) -> None:
     meta = json.loads((out / "run_meta.json").read_text(encoding="utf-8"))
     assert meta["resolved_seed"] == 123
     assert meta["ticks_requested"] == 3
+    assert "adaptation_event_counts" in meta
+    assert "contract_event_counts" in meta
+    assert "final_organism_count" in meta
 
     npz = np.load(out / "fields_snapshot.npz")
     assert "field_mana_geo" in npz.files
